@@ -1,0 +1,94 @@
+{
+  "question": "Why did CPA go up in June?",
+  "question_type": "answerable",
+  "intent_category": "driver_analysis",
+  "execution_success": true,
+  "audit_trail": [
+    {
+      "attempt": 1,
+      "code": "# Diagnostic: CPA increase in June analysis\nimport pandas as pd\n\ndf['month'] = df['date'].dt.strftime('%Y-%m')\njune_df = df[df['month'] == '2026-06']\nmay_df = df[df['month'] == '2026-05']\n\nmay_spend = may_df['spend_inr'].sum()\nmay_convs = may_df['conversions'].sum()\nmay_cpa = may_spend / may_convs if may_convs > 0 else 0\n\njune_spend = june_df['spend_inr'].sum()\njune_convs = june_df['conversions'].sum()\njune_cpa = june_spend / june_convs if june_convs > 0 else 0\n\ncpa_change_pct = ((june_cpa - may_cpa) / may_cpa * 100) if may_cpa > 0 else 0\n\n# Breakdown by Channel to isolate driver\nchannel_may = may_df.groupby('channel').agg({'spend_inr':'sum', 'conversions':'sum'}).reset_index()\nchannel_may['may_cpa'] = channel_may['spend_inr'] / channel_may['conversions']\n\nchannel_june = june_df.groupby('channel').agg({'spend_inr':'sum', 'conversions':'sum'}).reset_index()\nchannel_june['june_cpa'] = channel_june['spend_inr'] / channel_june['conversions']\n\ncomp = pd.merge(channel_may[['channel', 'may_cpa']], channel_june[['channel', 'june_cpa']], on='channel', how='outer')\ncomp['cpa_diff'] = comp['june_cpa'] - comp['may_cpa']\n\nresult = {\n    'may_cpa': round(may_cpa, 2),\n    'june_cpa': round(june_cpa, 2),\n    'cpa_change_pct': round(cpa_change_pct, 2),\n    'channel_breakdown': comp.to_dict(orient='records')\n}\nprint(f\"May CPA: INR {may_cpa:.2f}, June CPA: INR {june_cpa:.2f} (+{cpa_change_pct:.1f}%)\")\n",
+      "success": true,
+      "output": "May CPA: INR 463.36, June CPA: INR 463.10 (+-0.1%)",
+      "error": null
+    }
+  ],
+  "execution_trace": [
+    {
+      "timestamp": "2026-08-14T14:58:58.604611",
+      "node": "ORCHESTRATOR",
+      "action": "Initialize Graph State",
+      "question": "Why did CPA go up in June?"
+    },
+    {
+      "timestamp": "2026-08-14T14:58:58.792284",
+      "node": "DATA_CLEANING_WORKER",
+      "action": "Clean & Standardize Dataset",
+      "details": {
+        "initial_rows": 9557,
+        "final_rows": 9512,
+        "nulls_fixed": {
+          "revenue_inr": 327
+        },
+        "channels": [
+          "Google Search",
+          "YouTube",
+          "Meta",
+          "Google PMax",
+          "Google Display"
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-08-14T14:58:58.792308",
+      "node": "PLANNER",
+      "action": "Plan Question Breakdown",
+      "details": {
+        "question_type": "answerable",
+        "plan": "Generated pandas calculation code for driver_analysis diagnostic query.",
+        "requires_chart": true
+      }
+    },
+    {
+      "timestamp": "2026-08-14T14:58:58.856084",
+      "node": "QUERY_EXECUTOR_WORKER",
+      "action": "Execute Code (Attempt 1)",
+      "details": {
+        "success": true,
+        "output_length": 50,
+        "has_error": false
+      }
+    },
+    {
+      "timestamp": "2026-08-14T14:58:59.001961",
+      "node": "VISUALIZATION_WORKER",
+      "action": "Generate Diagnostic Chart",
+      "details": {
+        "chart_path": "D:\\Company Assignment\\campaign-performance-diagnostic\\code\\src\\nodes\\..\\..\\charts\\chart_1786699738.png"
+      }
+    },
+    {
+      "timestamp": "2026-08-14T14:58:59.002290",
+      "node": "SYNTHESIZER",
+      "action": "Synthesize Final Diagnostic Answer",
+      "details": {
+        "has_chart": true
+      }
+    }
+  ],
+  "data_audit_report": {
+    "initial_rows": 9557,
+    "nulls_fixed": {
+      "revenue_inr": 327
+    },
+    "duplicates_removed": 45,
+    "channels_unified": [
+      "Google Search",
+      "YouTube",
+      "Meta",
+      "Google PMax",
+      "Google Display"
+    ],
+    "date_range": "2026-04-01 to 2026-07-01",
+    "final_rows": 9512
+  }
+}
