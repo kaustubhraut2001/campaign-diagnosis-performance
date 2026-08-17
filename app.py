@@ -115,6 +115,12 @@ with st.sidebar:
         ["-- Select Question --"] + SAMPLE_QUESTIONS
     )
 
+    # Architecture Overview Expander
+    arch_img_path = os.path.join(os.path.dirname(__file__), "assets", "agent_architecture.jpg")
+    if os.path.exists(arch_img_path):
+        with st.expander("🧩 View Multi-Agent Architecture", expanded=False):
+            st.image(arch_img_path, caption="Multi-Agent State Graph Architecture", use_container_width=True)
+
 # Main Input Form
 col1, col2 = st.columns([4, 1])
 

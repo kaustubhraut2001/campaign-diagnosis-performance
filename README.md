@@ -2,6 +2,8 @@
 
 A multi-agent graph system designed to take plain-English campaign performance questions from account managers and answer them with **real calculated numbers**, explicit code audit trails, visual charts, and graph state execution traces.
 
+![Dashboard Preview](assets/dashboard_preview.jpg)
+
 ---
 
 ## 🚀 Quick Start (Single Command Run)
@@ -43,6 +45,8 @@ You can run individual questions or all 15 sample questions directly from the CL
 ---
 
 ## 🏗️ Architecture Overview
+
+![Agent Architecture](assets/agent_architecture.jpg)
 
 The system runs on an explicit multi-node state graph:
 - **ORCHESTRATOR**: Controls execution flow, initializes and owns `GraphState`, routes control between nodes based on execution outcomes, and logs execution traces.
